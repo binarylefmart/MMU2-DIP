@@ -11,16 +11,15 @@ extern int8_t filament_type[EXTRUDERS];
 
 void home();
 bool home_idler();
-bool home_selector();
-int get_idler_steps(int current_filament, int next_filament);
-int get_selector_steps(int current_filament, int next_filament);
 
-void park_idler(uint8_t _unpark);
+int get_idler_steps(int current_filament, int next_filament);
+
+void park_idler(bool _unpark);
 
 void do_pulley_step();
 void set_pulley_dir_pull();
 void set_pulley_dir_push();
-void move_proportional(int _idler, int _selector);
+void move_proportional(int _idler);
 
 #endif //STEPPER_H
 

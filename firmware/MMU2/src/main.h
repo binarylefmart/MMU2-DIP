@@ -13,5 +13,6 @@ void signal_ok_after_load_failure();
 
 extern uint8_t tmc_mode;
 extern FILE* uart_com;
+extern uint8_t pinda_state;
 
 #endif //_MAIN_H

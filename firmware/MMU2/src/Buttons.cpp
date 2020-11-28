@@ -29,7 +29,7 @@ bool settings_select_filament()
     delay(100);
     if (Btn::middle == buttonPressed())
     {
-      motion_set_idler_selector(active_extruder);
+      motion_set_idler2(active_extruder);
       if (active_extruder < 5) settings_bowden_length();
       else
       {
@@ -172,7 +172,7 @@ void settings_bowden_length()
   if (!isFilamentLoaded)    
   {
     BowdenLength bowdenLength;
-    load_filament_withSensor(false);
+    load_filament_withoutSensor(false);
     tmc_current_normal(pulley, AX_PUL, 1, 30);
 
     uint32_t saved_millis=millis();
@@ -228,7 +228,7 @@ void settings_bowden_length()
 
     } while (buttonPressed() != Btn::middle);
 
-    unload_filament_withSensor();
+    unload_filament_withoutSensor();
   }
 }
 

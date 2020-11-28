@@ -23,6 +23,7 @@ FILE* uart_com = uart1io;
 #endif //(UART_COM == 1)
 
 uint8_t tmc_mode = STEALTH_MODE;
+uint8_t pinda_state = 0;
 
 namespace
 {
@@ -80,28 +81,6 @@ static void led_blink(int _no)
   delay(10);
 }
 
-//! @brief signal filament presence
-//!
-//! non-blocking
-//! LED indication of states
-//!
-//! RG | RG | RG | RG | RG | meaning
-//! -- | -- | -- | -- | -- | ------------------------
-//! b0 | b0 | b0 | b0 | b0 | Error, filament detected, still present
-//!
-//! @n R - Red LED
-//! @n G - Green LED
-//! @n 1 - active
-//! @n 0 - inactive
-//! @n b - blinking
-static void signal_filament_present()
-{
-  shr16_set_led(0x2aa);
-  delay(300);
-  shr16_set_led(0x000);
-  delay(300);
-}
-
 void signal_load_failure()
 {
   shr16_set_led(0x000);
@@ -121,64 +100,6 @@ void signal_ok_after_load_failure()
   delay(800);
 }
 
-//! @brief Signal filament presence
-//!
-//! @retval true still present
-//! @retval false not present any more
-bool filament_presence_signaler()
-{
-  if (digitalRead(FIL_RUNOUT))
-  {  
-    signal_filament_present();
-    return true;
-  }
-  else
-  {
-    isFilamentLoaded = false;
-    return false;
-  }
-}
-
-//! @brief Check, if filament is not present in FINDA
-//!
-//! blocks, until filament is not removed and button pushed
-//!
-//! button | action
-//! ------ | ------
-//! right  | continue after error
-//!
-//! LED indication of states
-//!
-//! RG | RG | RG | RG | RG | meaning
-//! -- | -- | -- | -- | -- | ------------------------
-//! b0 | b0 | b0 | b0 | b0 | Error, filament detected, still present
-//! 0b | 0b | 0b | 0b | 0b | Error, filament detected, no longer present, continue by right button click
-//!
-//! @n R - Red LED
-//! @n G - Green LED
-//! @n 1 - active
-//! @n 0 - inactive
-//! @n b - blinking
-void check_filament_not_present()
-{
-  while (digitalRead(FIL_RUNOUT) == 1)
-  {
-    while (Btn::right != buttonPressed())
-    {
-      if (digitalRead(FIL_RUNOUT) == 1)
-      {
-        signal_filament_present();
-      }
-      else
-      {
-        shr16_set_led(0x155);
-        delay(300);
-        shr16_set_led(0x000);
-        delay(300);
-      }
-    }
-  }
-}
 
 static void signal_drive_error()
 {
@@ -277,8 +198,6 @@ void setup(void)
     motion_set_idler(filament);
   }
 
-  if (digitalRead(FIL_RUNOUT) == 1) isFilamentLoaded = true;
-
   #ifdef TMC_DEBUG
   test_tmc_connection();
   #endif
@@ -366,7 +285,7 @@ void loop(void)
     case S::Printing:
       break;
     case S::SignalFilament:
-      if (!filament_presence_signaler()) state = S::Idle;
+      //if (!filament_presence_signaler()) state = S::Idle;
       break;
     case S::Idle:
       manual_extruder_selector();
@@ -376,8 +295,8 @@ void loop(void)
         shr16_set_led(2 << 2 * (4 - active_extruder));
         if (Btn::middle == buttonPressed())
         {
-          motion_set_idler_selector(active_extruder);
-          feed_filament();
+          motion_set_idler(active_extruder);
+				  motion_feed_into_mmu(5000);
         }
       }
       break;
@@ -386,7 +305,7 @@ void loop(void)
       switch (buttonClicked())
       {
       case Btn::middle:
-        if (mmctl_IsOk()) state = S::WaitOk;
+         state = S::WaitOk;
         break;
       case Btn::right:
         state = S::Idle;
@@ -401,7 +320,7 @@ void loop(void)
       switch (buttonClicked())
       {
       case Btn::middle:
-        if (!mmctl_IsOk()) state = S::Wait;
+        state = S::Wait;
         break;
       case Btn::right:
         state = S::Idle;
@@ -460,8 +379,8 @@ void process_commands()
       if (isFilamentLoaded) state = S::SignalFilament;
       else
       {
-        select_extruder(value);
-        feed_filament();
+          select_extruder(value);
+					motion_feed_into_mmu(5000);
       }
         printf_P("ok\n");
       }
@@ -484,7 +403,7 @@ void process_commands()
     else if (sscanf(line, PSTR("U%d"), &value) > 0)
     {
 
-      unload_filament_withSensor();
+      unload_filament_withoutSensor();
       printf_P("ok\n");
 
       state = S::Idle;
@@ -498,7 +417,7 @@ void process_commands()
     {
       if (value == 0) //! P0 Read finda
       {
-      if(digitalRead(FIL_RUNOUT) == 1)
+      if(pinda_state == 1)
       {
         printf_P("1ok\n");
       }
@@ -567,7 +486,6 @@ void process_commands()
     {
       if ((value >= 0) && (value < EXTRUDERS)) //! K<nr.> cut filament
       {
-        mmctl_cut_filament(value);
         printf_P("ok\n");
       }
     }
