@@ -8,6 +8,8 @@
 //communication uart0/1
 #define UART_COM 1
 
+#define DEFAULT_MODE  STEALTH_MODE
+
 #define CHOPPER_TIMING  CHOPPER_DEFAULT_12V
 
 // Print simple drive status information

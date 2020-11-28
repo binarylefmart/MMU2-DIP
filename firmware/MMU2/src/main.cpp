@@ -22,7 +22,7 @@
 FILE* uart_com = uart1io;
 #endif //(UART_COM == 1)
 
-uint8_t tmc_mode = STEALTH_MODE;
+uint8_t tmc_mode = DEFAULT_MODE;
 uint8_t pinda_state = 0;
 
 namespace
