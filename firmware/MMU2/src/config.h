@@ -10,7 +10,21 @@
 
 #define DEFAULT_MODE  STEALTH_MODE
 
+// 12 or 24
+enum VOLTAGE
+{
+  //mode
+  VOLTAGE_12 = 0,
+  VOLTAGE_24
+};
+
+#define MMU_VOLTAGE VOLTAGE_12
+
+#if MMU_VOLTAGE == VOLTAGE_12
 #define CHOPPER_TIMING  CHOPPER_DEFAULT_12V
+#elif MMU_VOLTAGE == VOLTAGE_24
+#define CHOPPER_TIMING  CHOPPER_DEFAULT_24V
+#endif
 
 // Print simple drive status information
 // #define TMC_DEBUG
@@ -26,8 +40,13 @@
 
 // SG_THR stallguard treshold (sensitivity),  TMC2209: 0...255. TMC2130: 63...-64
 // !!! This setting is not universal, and the values set by different machines are different !!!
+#if MMU_VOLTAGE == VOLTAGE_12
+#define TMC_SG_THR_SEL     50  //TMC2209 set to about 50, TMC2130 Set to about 31
+#define TMC_SG_THR_IDL     25  //TMC2209 set to about 20, TMC2130 Set to about 19
+#elif MMU_VOLTAGE == VOLTAGE_24
 #define TMC_SG_THR_SEL     50  //TMC2209 set to about 50, TMC2130 Set to about 31
 #define TMC_SG_THR_IDL     20  //TMC2209 set to about 20, TMC2130 Set to about 19
+#endif
 
 #define TMC_TCOOLTHRS      450     // TCOOLTHRS default
 
