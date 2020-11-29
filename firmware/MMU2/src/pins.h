@@ -1,3 +1,6 @@
+// STM32F0C8
+// STM32F030C8T6
+
 // @author Marek Bel
 #ifndef PINS_H_
 #define PINS_H_
