@@ -9,15 +9,15 @@
 #define UART_COM 1
 
 #define DEFAULT_MODE  STEALTH_MODE
+//#define DEFAULT_MODE  NORMAL_MODE
 
 
-
-#define CHOPPER_TIMING  CHOPPER_DEFAULT_12V
-//#define CHOPPER_TIMING  CHOPPER_DEFAULT_24V
+//#define CHOPPER_TIMING  CHOPPER_DEFAULT_12V
+#define CHOPPER_TIMING  CHOPPER_DEFAULT_24V
 
 
 // Print simple drive status information
-// #define TMC_DEBUG
+//#define TMC_DEBUG
 
 #define HOLD_MULTIPLIER    0.5  // Scales down the holding current from run current
 #define INTERPOLATE       true  // Interpolate X/Y/Z_MICROSTEPS to 256
@@ -31,11 +31,11 @@
 // SG_THR stallguard treshold (sensitivity),  TMC2209: 0...255. TMC2130: 63...-64
 // !!! This setting is not universal, and the values set by different machines are different !!!
 //12V
-#define TMC_SG_THR_SEL     50  //TMC2209 set to about 50, TMC2130 Set to about 31
-#define TMC_SG_THR_IDL     25  //TMC2209 set to about 20, TMC2130 Set to about 19
+// #define TMC_SG_THR_SEL     50  //TMC2209 set to about 50, TMC2130 Set to about 31
+// #define TMC_SG_THR_IDL     25  //TMC2209 set to about 20, TMC2130 Set to about 19
 //24V
-//#define TMC_SG_THR_SEL     50  //TMC2209 set to about 50, TMC2130 Set to about 31
-//#define TMC_SG_THR_IDL     20  //TMC2209 set to about 20, TMC2130 Set to about 19
+#define TMC_SG_THR_SEL     50  //TMC2209 set to about 50, TMC2130 Set to about 31
+#define TMC_SG_THR_IDL     20  //TMC2209 set to about 20, TMC2130 Set to about 19
 
 #define TMC_TCOOLTHRS      450     // TCOOLTHRS default
 
@@ -85,12 +85,12 @@
 // 29	917,8813069
 // 30	948,4773505
 // 31	979,0733941
-
-#define CURRENT_HOLDING_STEALTH {1, 8, 8}
-#define CURRENT_HOLDING_NORMAL  {1, 8, 8}
+// {AX_PUL , AX_SEL , AX_IDL}
+#define CURRENT_HOLDING_STEALTH {8, 8, 8}
+#define CURRENT_HOLDING_NORMAL  {8, 8, 8}
 #define CURRENT_RUNNING_STEALTH {20, 22, 22}
 #define CURRENT_RUNNING_NORMAL  {22, 23, 25}
-#define CURRENT_HOMING          {1, 22, 22}
+#define CURRENT_HOMING          {8, 22, 22}
 
 //number of extruders [1 2 3 4 5]
 #define EXTRUDERS 5

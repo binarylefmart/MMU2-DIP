@@ -28,17 +28,11 @@ static const int eject_steps = 2500;
 void motion_feed_into_mmu(uint16_t steps)
 {
     motion_engage_idler();
+
+    tmc_init_axis(pulley, AX_PUL, (TMC_MODE)tmc_mode);
+    
     set_pulley_dir_push();
     unsigned long delay = 4500;
-
-	if(tmc_mode == NORMAL_MODE)
-	{
-		tmc_current_normal(pulley, AX_PUL, 1, 15);
-	}
-	else
-	{
-		tmc_current_stealth(pulley, AX_PUL, 1, 15); //probably needs tuning of currents
-	}
 
     uint_least8_t blinker = 0;
 
