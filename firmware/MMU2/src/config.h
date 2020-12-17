@@ -93,6 +93,6 @@
 #define CURRENT_HOMING          {8, 22, 22}
 
 //number of extruders [1 2 3 4 5]
-#define EXTRUDERS 5
+#define EXTRUDERS 7
 
 #endif //CONFIG_H_
