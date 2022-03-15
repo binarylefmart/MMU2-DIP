@@ -212,7 +212,7 @@ void load_filament_inPrinter()
     motion_engage_idler();
     set_pulley_dir_push();
 
-    const unsigned long fist_segment_delay = 2600;
+    const unsigned long fist_segment_delay = 3600;
 
     tmc_init_axis(pulley, AX_PUL, (TMC_MODE)tmc_mode);
 
