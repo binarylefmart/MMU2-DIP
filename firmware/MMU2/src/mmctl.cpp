@@ -134,7 +134,7 @@ void eject_filament(uint8_t filament)
     {
         do_pulley_step();
         steps++;
-        delayMicroseconds(1500);
+        delayMicroseconds(2500);
     }
 
     motion_disengage_idler();
@@ -151,7 +151,7 @@ void recover_after_eject()
     {
         do_pulley_step();
         steps++;
-        delayMicroseconds(1500);
+        delayMicroseconds(2500);
     }
     motion_disengage_idler();
 
@@ -212,7 +212,7 @@ void load_filament_inPrinter()
     motion_engage_idler();
     set_pulley_dir_push();
 
-    const unsigned long fist_segment_delay = 3600;
+    const unsigned long fist_segment_delay = 3000;
 
     tmc_init_axis(pulley, AX_PUL, (TMC_MODE)tmc_mode);
 
@@ -226,6 +226,7 @@ void load_filament_inPrinter()
         if ('A' == getc(uart_com))
         {
             motion_door_sensor_detected();
+            do_pulley_step();
             break;
         }
         do_pulley_step();
