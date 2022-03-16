@@ -23,7 +23,7 @@ int active_extruder = 0;
 bool isFilamentLoaded = false;
 
 //! Number of pulley steps to eject and un-eject filament
-static const int eject_steps = 2500;
+static const int eject_steps = 1500;
 
 void motion_feed_into_mmu(uint16_t steps)
 {
@@ -134,7 +134,7 @@ void eject_filament(uint8_t filament)
     {
         do_pulley_step();
         steps++;
-        delayMicroseconds(2500);
+        delayMicroseconds(4000);
     }
 
     motion_disengage_idler();
@@ -212,7 +212,7 @@ void load_filament_inPrinter()
     motion_engage_idler();
     set_pulley_dir_push();
 
-    const unsigned long fist_segment_delay = 3000;
+    const unsigned long fist_segment_delay = 2600;
 
     tmc_init_axis(pulley, AX_PUL, (TMC_MODE)tmc_mode);
 
@@ -226,6 +226,8 @@ void load_filament_inPrinter()
         if ('A' == getc(uart_com))
         {
             motion_door_sensor_detected();
+            do_pulley_step();
+            delay = fist_segment_delay - (micros() - now);
             do_pulley_step();
             break;
         }
