@@ -226,9 +226,14 @@ void load_filament_inPrinter()
         if ('A' == getc(uart_com))
         {
             motion_door_sensor_detected();
-            do_pulley_step();
-            delay = fist_segment_delay - (micros() - now);
-            do_pulley_step();
+            pulley_step_pin_set();
+            asm("nop");
+            pulley_step_pin_reset();
+            asm("nop");
+            pulley_step_pin_set();
+            asm("nop");
+            pulley_step_pin_reset();
+            asm("nop");
             break;
         }
         do_pulley_step();
